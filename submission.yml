@@ -6,16 +6,29 @@ echo "Starting deployment..."
 
 ```
   cd terraform
+  ```
+  ```
   terraform init
+  ```
+  ```
   terraform apply -auto-approve
-
+  ```
+```
   cd ..
-
+```
+```
   kubectl apply -f kubernetes/hello-app.yaml
+```
+```
   kubectl apply -f terraform/database/postgres.yaml
+```
+```
   kubectl apply -f terraform/database/redis.yaml
+```
+```
   kubectl apply -f monitoring/grafana.yaml
-
+```
+```
   echo "Deployment completed"
 ```
 
@@ -37,5 +50,7 @@ echo "Destroying infrastructure..."
 
 ```
   cd terraform
+  ```
+  ```
   terraform destroy -auto-approve
 ```
