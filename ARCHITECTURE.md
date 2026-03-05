@@ -1,55 +1,105 @@
-# Architecture Design
+# System Architecture
 
-## System Architecture
+## Overview
 
-The platform uses a **multi-region Kubernetes architecture** deployed on Google Cloud.
+This platform implements a **multi-region Kubernetes architecture** designed for high availability and resilience.
 
-## Components
+The system distributes workloads across multiple regions while maintaining centralized observability and scalable infrastructure.
 
-### Infrastructure Layer
-Terraform provisions Kubernetes clusters across regions.
+---
 
-### Application Layer
-Hello App is deployed as a Kubernetes Deployment and exposed using a LoadBalancer service.
+## Architecture Diagram
+```
+            Users
+              |
+              v
+      Global Load Balancer
+              |
+    ------------------------
+    |                      |
+    v                      v
 
-### Database Layer
-PostgreSQL runs inside Kubernetes to store application data.
+    Kubernetes Cluster Kubernetes Cluster
+Region A Region B
+| |
+v v
+Hello App Pods Hello App Pods
+| |
+--------Database & Cache---------
+|
+PostgreSQL + Redis
+|
+Monitoring
+|
+Grafana
+```
 
-### Cache Layer
-Redis provides caching for faster data access.
+---
 
-### Observability Layer
-Grafana is used for monitoring system metrics and visualization.
+## Architecture Components
 
-## Architecture Flow
+### 1 Infrastructure Layer
 
-User  
-↓  
-LoadBalancer Service  
-↓  
-Kubernetes Cluster  
-↓  
-Hello App Pods  
-↓  
-PostgreSQL Database  
-Redis Cache  
-↓  
-Grafana Monitoring
+Infrastructure resources are provisioned using **Terraform**, including:
+
+- Kubernetes clusters
+- networking configuration
+- resource provisioning
+
+---
+
+### 2 Application Layer
+
+The application is deployed using Kubernetes deployments.
+
+Features:
+
+- containerized microservice
+- horizontally scalable pods
+- exposed through LoadBalancer service
+
+---
+
+### 3 Data Layer
+
+PostgreSQL stores application data.
+
+Redis provides caching to reduce database load.
+
+---
+
+### 4 Observability Layer
+
+Grafana provides monitoring dashboards for:
+
+- cluster health
+- pod metrics
+- service performance
+
+---
 
 ## Multi-Region Strategy
 
-Clusters are deployed in multiple regions to provide:
+The infrastructure spans multiple regions to improve:
 
-- High availability
-- Fault tolerance
-- Reduced latency
+- availability
+- latency
+- resilience
 
-Traffic can be routed to the nearest available region.
+Traffic can be routed to the nearest healthy region.
 
-## Infrastructure as Code
+---
 
-Terraform is used to automate:
+## Trade-Offs
 
-- Cluster creation
-- Networking configuration
-- Resource provisioning
+Advantages:
+
+- high availability
+- scalability
+- infrastructure automation
+
+Challenges:
+
+- cross-region data consistency
+- increased infrastructure complexity
+- monitoring requirements
