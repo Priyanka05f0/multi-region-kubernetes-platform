@@ -1,0 +1,41 @@
+commands:
+deploy:
+description: "Deploy multi-region Kubernetes infrastructure and services"
+script: |
+echo "Starting deployment..."
+
+```
+  cd terraform
+  terraform init
+  terraform apply -auto-approve
+
+  cd ..
+
+  kubectl apply -f kubernetes/hello-app.yaml
+  kubectl apply -f terraform/database/postgres.yaml
+  kubectl apply -f terraform/database/redis.yaml
+  kubectl apply -f monitoring/grafana.yaml
+
+  echo "Deployment completed"
+```
+
+verify:
+description: "Verify application and infrastructure"
+script: |
+echo "Checking pods..."
+kubectl get pods
+
+```
+  echo "Checking services..."
+  kubectl get svc
+```
+
+destroy:
+description: "Cleanup infrastructure"
+script: |
+echo "Destroying infrastructure..."
+
+```
+  cd terraform
+  terraform destroy -auto-approve
+```
