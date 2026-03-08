@@ -1,80 +1,103 @@
 # Operational Runbook
 
-## Deployment
-
-### Deploy Infrastructure
-
-cd terraform  
-terraform init  
-terraform apply  
-
-### Deploy Application
-
-kubectl apply -f kubernetes/hello-app.yaml
-
-### Deploy Database and Cache
-
-kubectl apply -f database/postgres.yaml  
-kubectl apply -f database/redis.yaml
-
-### Deploy Monitoring
-
-kubectl apply -f monitoring/grafana.yaml
+This document describes operational procedures for maintaining the platform.
 
 ---
 
-## Verification
+# Deployment
 
-Check running pods:
+Deploy infrastructure:
+```bash
+cd terraform
+terraform init
+terraform apply
+```
 
+Deploy services:
+```bash
+kubectl apply -f kubernetes/
+kubectl apply -f database/
+kubectl apply -f monitoring/
+```
+
+---
+
+# Verification
+
+Check pods:
+```bash
 kubectl get pods
+```
 
 Check services:
-
+```bash
 kubectl get svc
+```
 
 ---
 
-## Access Application
+# Disaster Recovery
 
-Get external IP:
+If a node or service fails:
 
-kubectl get svc hello-app
+1 Identify failed pod
 
-Open in browser:
+```bah
+kubectl get pods
 
-http://<external-ip>
 
----
+2 Inspect pod logs
 
-## Access Grafana
-
-kubectl get svc grafana
-
-Open:
-
-http://<grafana-ip>:3000
-
-Login:
-
-username: admin  
-password: admin
-
----
-
-## Troubleshooting
-
-Describe pod:
-
-kubectl describe pod <pod-name>
-
-View logs:
 
 kubectl logs <pod-name>
 
+
+3 Restart deployment if required
+
+
+kubectl rollout restart deployment <deployment-name>
+
+
 ---
 
-## Destroy Infrastructure
+# Regional Failure Scenario
 
-cd terraform  
+If a region becomes unavailable:
+
+1 Kubernetes automatically reschedules pods.
+
+2 Traffic continues to flow to healthy nodes.
+
+3 Monitoring dashboards show cluster health.
+
+---
+
+# Failover Procedure
+
+Steps:
+
+1 detect regional failure
+2 confirm pod health
+3 redirect traffic if necessary
+4 monitor service recovery
+
+---
+
+# Failback Procedure
+
+Once the failed region recovers:
+
+1 redeploy infrastructure
+2 verify pods are healthy
+3 restore traffic distribution
+
+---
+
+# Cleanup
+
+Destroy infrastructure:
+
+```
+cd terraform
 terraform destroy
+```
