@@ -1,0 +1,26 @@
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  name: prometheus
+  namespace: default
+  labels:
+    release: prometheus
+spec:
+  replicas: 1
+  version: v2.45.0
+  serviceAccountName: prometheus-k8s
+  # Add this to look in ALL namespaces
+  serviceMonitorNamespaceSelector: {} 
+  # This matches the label we added to your ServiceMonitor
+  serviceMonitorSelector:
+    matchLabels:
+      release: prometheus
+  resources:
+    requests:
+      memory: 400Mi
+  storage:
+    emptyDir: {}
+  securityContext:
+    fsGroup: 2000
+    runAsNonRoot: true
+    runAsUser: 1000

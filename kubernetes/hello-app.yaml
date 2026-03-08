@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: hello-app
+  namespace: default
 spec:
   replicas: 2
   selector:
@@ -17,15 +18,21 @@ spec:
         image: gcr.io/google-samples/hello-app:1.0
         ports:
         - containerPort: 8080
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: hello-app
+  namespace: default
+  labels:
+    app: hello-app
 spec:
   type: LoadBalancer
   selector:
     app: hello-app
   ports:
-  - port: 80
+  - name: web
+    port: 80
     targetPort: 8080
+    protocol: TCP

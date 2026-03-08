@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: hello-app-monitor
+  namespace: default
+  labels:
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: hello-app
+  namespaceSelector:
+    matchNames:
+    - default
+  endpoints:
+  - port: web
+    interval: 30s
